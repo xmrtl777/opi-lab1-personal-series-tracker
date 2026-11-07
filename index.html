@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Персональный сериал-трекер</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Мой сериал-трекер</h1>
+        <div class="input-section">
+            <input type="text" id="seriesTitle" placeholder="Название сериала...">
+            <input type="number" id="seriesSeasons" placeholder="Сезонов" min="1">
+            <button onclick="addSeries()">Добавить</button>
+        </div>
+        <ul id="seriesList"></ul>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

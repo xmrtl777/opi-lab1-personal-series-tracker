@@ -45,9 +45,24 @@ function renderSeries() {
                 <option value="Просмотрено" ${item.status === 'Просмотрено' ? 'selected' : ''}>Просмотрено</option>
                 <option value="Брошено" ${item.status === 'Брошено' ? 'selected' : ''}>Брошено</option>
             </select>
+            <input type="number" min="1" max="10" placeholder="Оценка" 
+                   value="${item.rating || ''}" 
+                   onchange="setRating(${item.id}, this.value)">
         `;
         list.appendChild(li);
     });
+}
+
+function setRating(id, value) {
+    const rating = parseInt(value);
+    if (rating < 1 || rating > 10) {
+        alert('Оценка должна быть от 1 до 10!');
+        return;
+    }
+    const item = series.find(s => s.id === id);
+    if (item) {
+        item.rating = rating;
+    }
 }
 
 function changeStatus(id, newStatus) {

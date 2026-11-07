@@ -39,7 +39,20 @@ function renderSeries() {
         const li = document.createElement('li');
         li.innerHTML = `
             <span><strong>${item.title}</strong> (${item.seasons} сез.)</span>
+            <select onchange="changeStatus(${item.id}, this.value)">
+                <option value="Запланировано" ${item.status === 'Запланировано' ? 'selected' : ''}>Запланировано</option>
+                <option value="Смотрю" ${item.status === 'Смотрю' ? 'selected' : ''}>Смотрю</option>
+                <option value="Просмотрено" ${item.status === 'Просмотрено' ? 'selected' : ''}>Просмотрено</option>
+                <option value="Брошено" ${item.status === 'Брошено' ? 'selected' : ''}>Брошено</option>
+            </select>
         `;
         list.appendChild(li);
     });
+}
+
+function changeStatus(id, newStatus) {
+    const item = series.find(s => s.id === id);
+    if (item) {
+        item.status = newStatus;
+    }
 }

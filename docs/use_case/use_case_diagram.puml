@@ -1,1 +1,39 @@
+@startuml
+left to right direction
+actor "Пользователь" as User
 
+rectangle "Персональный сериал-трекер" {
+  usecase "Добавление сериала" as AddSeries
+  usecase "Изменение статуса просмотра" as ChangeStatus
+  usecase "Выставление рейтинга" as SetRating
+  usecase "Редактирование сериала" as EditSeries
+  usecase "Удаление сериала" as DeleteSeries
+  usecase "Просмотр списка сериалов" as ViewList
+  usecase "Поиск сериалов" as SearchSeries
+  usecase "Фильтрация по статусу" as FilterByStatus
+  usecase "Сортировка списка" as SortList
+  usecase "Автосохранение данных" as AutoSave
+  usecase "Валидация данных" as ValidateData
+
+  AddSeries .> ValidateData : <<include>>
+  EditSeries .> ValidateData : <<include>>
+  SetRating .> ValidateData : <<include>>
+
+  AddSeries .> AutoSave : <<include>>
+  ChangeStatus .> AutoSave : <<include>>
+  EditSeries .> AutoSave : <<include>>
+  DeleteSeries .> AutoSave : <<include>>
+  SetRating .> AutoSave : <<include>>
+
+  ViewList <.. SearchSeries : <<extend>>
+  ViewList <.. FilterByStatus : <<extend>>
+  ViewList <.. SortList : <<extend>>
+}
+
+User -- AddSeries
+User -- ChangeStatus
+User -- SetRating
+User -- EditSeries
+User -- DeleteSeries
+User -- ViewList
+@enduml

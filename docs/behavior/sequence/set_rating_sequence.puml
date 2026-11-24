@@ -1,0 +1,39 @@
+@startuml Set_Rating_Sequence
+actor "Пользователь" as User
+participant "Интерфейс" as UI
+participant "Контроллер" as Controller
+participant "Сервис сериалов" as SeriesService
+participant "Хранилище\n(localStorage)" as DB
+
+User -> UI: Вводит рейтинг (1–10)
+activate User
+activate UI
+
+UI -> Controller: setRating(series_id, rating)
+activate Controller
+
+Controller -> SeriesService: validateRating(rating)
+activate SeriesService
+
+alt Рейтинг от 1 до 10
+    SeriesService -> DB: UPDATE User_Series\nSET rating = ?\nWHERE user_series_id = ?
+    activate DB
+    DB --> SeriesService: rows_affected
+    deactivate DB
+    SeriesService --> Controller: SuccessResponse()
+    deactivate SeriesService
+    Controller --> UI: 200 OK
+    deactivate Controller
+    UI -> UI: Обновить отображение рейтинга
+    UI --> User: Показать рейтинг
+else Рейтинг вне диапазона
+    SeriesService --> Controller: ErrorResponse("Рейтинг 1-10")
+    deactivate SeriesService
+    Controller --> UI: 400 Bad Request
+    deactivate Controller
+    UI --> User: Показать ошибку валидации
+end
+
+deactivate UI
+deactivate User
+@enduml

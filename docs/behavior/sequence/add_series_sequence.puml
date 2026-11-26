@@ -1,0 +1,39 @@
+@startuml Add_Series_Sequence
+actor "Пользователь" as User
+participant "Интерфейс" as UI
+participant "Контроллер" as Controller
+participant "Сервис сериалов" as SeriesService
+participant "Хранилище\n(localStorage)" as DB
+
+User -> UI: Вводит название и кол-во сезонов
+activate User
+activate UI
+
+UI -> Controller: addSeries(title, seasons)
+activate Controller
+
+Controller -> SeriesService: validateSeriesData(title, seasons)
+activate SeriesService
+
+alt Данные валидны
+    SeriesService -> DB: Сохранить сериал\n(status="Запланировано")
+    activate DB
+    DB --> SeriesService: series_id
+    deactivate DB
+    SeriesService --> Controller: SuccessResponse(series_id)
+    deactivate SeriesService
+    Controller --> UI: OK\n{series_id}
+    deactivate Controller
+    UI -> UI: Обновить список сериалов
+    UI --> User: Показать новый сериал в списке
+else Название пустое
+    SeriesService --> Controller: ErrorResponse("Введите название")
+    deactivate SeriesService
+    Controller --> UI: 400 Bad Request
+    deactivate Controller
+    UI --> User: Показать ошибку валидации
+end
+
+deactivate UI
+deactivate User
+@enduml

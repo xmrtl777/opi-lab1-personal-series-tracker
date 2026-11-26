@@ -1,0 +1,46 @@
+@startuml Search_Filter_Sequence
+actor "Пользователь" as User
+participant "Интерфейс" as UI
+participant "Контроллер" as Controller
+participant "Сервис сериалов" as SeriesService
+participant "Хранилище\n(localStorage)" as DB
+
+== Поиск по названию ==
+User -> UI: Вводит текст в поле поиска
+activate User
+activate UI
+UI -> Controller: searchSeries(query)
+activate Controller
+Controller -> SeriesService: filterByTitle(query)
+activate SeriesService
+SeriesService -> DB: Получить все сериалы
+activate DB
+DB --> SeriesService: series_list
+deactivate DB
+SeriesService -> SeriesService: Фильтрация без учёта регистра
+SeriesService --> Controller: FilteredList
+deactivate SeriesService
+Controller --> UI: 200 OK\n{filtered}
+deactivate Controller
+UI -> UI: Отобразить результаты
+UI --> User: Показать найденные сериалы
+
+== Фильтрация по статусу ==
+User -> UI: Выбирает статус\n(Запланировано/Смотрю/…)
+UI -> Controller: filterByStatus(status)
+activate Controller
+Controller -> SeriesService: filterByStatus(status)
+activate SeriesService
+SeriesService -> DB: Получить все сериалы
+activate DB
+DB --> SeriesService: series_list
+deactivate DB
+SeriesService --> Controller: FilteredList
+deactivate SeriesService
+Controller --> UI: 200 OK
+deactivate Controller
+UI --> User: Показать отфильтрованные
+
+deactivate UI
+deactivate User
+@enduml

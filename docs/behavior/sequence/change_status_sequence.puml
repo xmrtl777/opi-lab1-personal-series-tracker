@@ -1,0 +1,32 @@
+@startuml Change_Status_Sequence
+actor "Пользователь" as User
+participant "Интерфейс" as UI
+participant "Контроллер" as Controller
+participant "Сервис сериалов" as SeriesService
+participant "Хранилище\n(localStorage)" as DB
+
+User -> UI: Выбирает новый статус\n(Запланировано/Смотрю/\nПросмотрено/Брошено)
+activate User
+activate UI
+
+UI -> Controller: changeStatus(series_id, new_status)
+activate Controller
+
+Controller -> SeriesService: updateStatus(series_id, new_status)
+activate SeriesService
+
+SeriesService -> DB: UPDATE User_Series\nSET status = new_status\nWHERE user_series_id = ?
+activate DB
+DB --> SeriesService: rows_affected
+deactivate DB
+
+SeriesService --> Controller: SuccessResponse()
+deactivate SeriesService
+Controller --> UI: 200 OK
+deactivate Controller
+
+UI -> UI: Обновить карточку сериала
+UI --> User: Показать новый статус
+deactivate UI
+deactivate User
+@enduml
